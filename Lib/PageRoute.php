@@ -50,6 +50,7 @@ class PageRoute extends CakeRoute {
  * @access public
  */
 	function __construct($template, $defaults = array(), $options = array()) {
+		
 		$this->template = $template;
 		$this->defaults = (array)$defaults;
 		$this->options = array_merge($this->options, (array) $options);
@@ -69,9 +70,8 @@ class PageRoute extends CakeRoute {
 		}
 
 		$path = trim(str_replace('//', '', (string) $params['page']), '/');
-
-
-		if (!file_exists(APP . 'View' . DS . $this->options['controller'] . DS . $path . '.ctp')) {
+		
+		if (!file_exists(APP . 'View' . DS . Inflector::camelize($this->options['controller']) . DS . $path . '.ctp')) {
 			return false;
 		}
 		App::uses('Sanitize', 'Utility');
@@ -94,10 +94,7 @@ class PageRoute extends CakeRoute {
 	function match($url) {
 		if (!isset($url['controller']) || !isset($url['action'])) {
 			return false;
-		}
-		
-		debug($url);
-		debug($this->options);
+		}	
 		
 
 		if ($url['controller'] != $this->options['controller'] || $url['action'] != $this->options['action']) {
@@ -114,7 +111,7 @@ class PageRoute extends CakeRoute {
 
 		if (isset($url['validate']) && $url['validate'] == true) {
 			$path = trim(str_replace('//', '', (string) $url['page']), '/');
-			if (!file_exists(APP . 'View' . DS . $this->options['controller'] . DS . $path . '.ctp')) {
+			if (!file_exists(APP . 'View' . DS . Inflector::camelize($this->options['controller']) . DS . $path . '.ctp')) {
 				return false;
 			}
 		}
