@@ -10,22 +10,22 @@ So a few minutes of hacking later, and here I am with this lovely @PageRoute@.
 
 h2. Requirements
 
-* PHP 5.2+
-* CakePHP 1.3
+* PHP 5.2.6+
+* CakePHP 2.0
 
 h2. Installation
 
 _[Manual]_
 
-# Download this: http://github.com/josegonzalez/page_route/zipball/master
+# Download this: http://github.com/sams/PageRoute/zipball/master
 # Unzip that download.
-# Copy the resulting folder to app/plugins
-# Rename the folder you just copied to @page_route@
+# Copy the resulting folder to app/Plugin
+# Rename the folder you just copied to @pPageRoute@
 
 _[GIT Submodule]_
 
 In your app directory type:
-<pre><code>git submodule add git://github.com/josegonzalez/page_route.git plugins/page_route
+<pre><code>git submodule add git://github.com/sams/PageRoute.git Plugin/PageRoute
 git submodule init
 git submodule update
 </code></pre>
@@ -33,43 +33,30 @@ git submodule update
 _[GIT Clone]_
 
 In your plugin directory type
-<pre><code>git clone git://github.com/josegonzalez/page_route.git page_route</code></pre>
+<pre><code>git clone git://github.com/sams/PageRoute.git Plugin/PageRoute</code></pre>
 
 h2. Usage
 
-Way near the bottom of your @routes.php@ file, add the following:
+In @bootstrap.php@
 
-<pre><code>App::import('Lib', 'PageRoute.PageRoute');
+pre>code{CakePlugin::loadAll(array('PageRoute' => array('routes' => true)))}
+
+--or--
+
+Somewhere near the bottom of your @routes.php@ file, add the following:
+
+<pre><code>App::uses('PageRoute', 'PageRoute.Lib');
 Router::connect('/:page', array('controller' => 'pages', 'action' => 'display'),
 	array('routeClass' => 'PageRoute')
 );
 </code></pre>
 
-And now you can remove all shortcuts to your @/pages/display/page-name@ urls. Whenever you create a new @.ctp@ file in @app/views/pages@, this route will automatically detect it using a @file_exists()@ call. Because of this, it is recommended to use this as one of the last, if not the last, route in your application, in order to minimize file-reads.
-
-It is also possible to customize the controller/action used for this. For example, we might want to use the @StaticPagesController::index()@ instead of @PagesController::display()@. In that case, our @routes.php@ would look like the following:
-
-<pre><code>App::import('Lib', 'PageRoute.PageRoute');
-Router::connect('/:page', array('controller' => 'static_pages', 'action' => 'index'),
-	array('routeClass' => 'PageRoute', 'controller' => 'static_pages', 'action' => 'index')
-);
-</code></pre>
-
-In this way, we can easily rename the @PagesController@ to something less useful, and reuse the @PagesController@ for something else - such as dynamic content from the database.
-
-Reverse routing will all work the same as it does without this route class. @array('controller' => 'pages', 'action' => 'display', 'about')@ will be automatically converted to @array('controller' => 'pages', 'action' => 'display', 'page' => 'about')@ for backwards compatibility Please note that by default, the regex @[\/\w_-]+@ is used to check the page validity, so you may need to update that regex in the Route options as follows:
-
-<pre><code>App::import('Lib', 'PageRoute.PageRoute');
-Router::connect('/:page', array('controller' => 'static_pages', 'action' => 'index'),
-	array('routeClass' => 'PageRoute', 'page' => '[a-zA-Z]+')
-);
-</code></pre>
-
-Note that the @.@ character has been disallowed in the default regex to remove the possibility of traversing the directory tree for security reasons.
+With this option you'll need to comment out the line that includes Cake Auto routes
 
 h2. Todo
 
 * Unit Tests
+* Enable changing the Controller and action + setting other controls of the 
 * Allow usage of the @.@ character in routes
 
 h2. License
